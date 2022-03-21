@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 
 
 class SellerCustomer(models.Model):
-   seller  = models.ForeignKey(get_user_model(), null=True, related_name="user_as_seller", on_delete=models.CASCADE)
+   seller  = models.ForeignKey(get_user_model(), related_name="user_as_seller", on_delete=models.CASCADE)
    customer = models.ForeignKey(get_user_model(), related_name="user_as_customer", on_delete=models.CASCADE)
    unique_together = [['seller', 'customer']]
 
@@ -19,7 +19,7 @@ class Purchase(models.Model):
    seller_customer = models.ForeignKey(SellerCustomer, on_delete=models.CASCADE)
    datetime = models.DateTimeField(auto_now_add=True)
    amount = models.DecimalField(max_digits=8, decimal_places=2)
-   status = models.BooleanField(default=True, null=True)
+   status = models.BooleanField(default=True)
 
 
 class Item(models.Model):
@@ -28,7 +28,7 @@ class Item(models.Model):
    quantity = models.DecimalField(max_digits=5, decimal_places=2)
 
 
-class Payments(models.Model):
+class Payment(models.Model):
    seller_customer = models.ForeignKey(SellerCustomer, on_delete=models.CASCADE)
    datetime = models.DateTimeField(auto_now_add=True)
    amount = models.IntegerField()

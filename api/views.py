@@ -1,11 +1,8 @@
-from django.test import RequestFactory
 from user.serializers             import CustomUserSerializer
 from rest_framework.response      import Response
 from django.contrib.auth          import get_user_model
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views         import APIView
-from rest_framework.permissions   import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
 from . import serializers       
 from . import models 
 
@@ -23,14 +20,13 @@ class Signup(APIView):
         return Response(serializer.errors)
 
 
-class Products(APIView):
+class Product(APIView):
 
     def get(self, request, pk=None):
         if pk:
             query_set = models.Product.objects.get(seller=request.user.id, id=pk)
             serializer = serializers.ProductSerializer(query_set)
         else:
-            print(request.user.id)
             query_set = models.Product.objects.filter(seller=request.user.id)
             serializer = serializers.ProductSerializer(query_set, many=True)
 
@@ -46,7 +42,9 @@ class Products(APIView):
         return Response(serializer.errors)
 
     def delete(self, request, pk):
-        models.Product.objects.get(id=pk).delete()
+        product = models.Product.objects.get(id=pk)
+        product.seller = None
+        product.save()
         return Response({"message":"product deleted"})
 
 
@@ -59,32 +57,65 @@ class Purchase(APIView):
 
         serializer = serializers.SellerCustomerSerializer(data=request.data)
         if serializer.is_valid():
-            seller_customer = serializer.save()
-            request.data["seller_customer"] = seller_customer.id
+            request.data["seller_customer"] = serializer.save().id
 
             serializer = serializers.PurchaseSerializer(data=request.data)
             if serializer.is_valid():
                 purchase = serializer.save()
 
-                items = []
                 for item in request.data["items"]:
                     item["purchase"] = purchase.id
                     serializer = serializers.ItemSerializer(data=item)
                     if serializer.is_valid():
-                        items.append(serializers.ItemSerializer(serializer.save()).data)
+                        serializer.save()
                     else:
                         return Response(serializer.errors)
 
-                return Response({
-                    "message":"purchase added",
-                    "response": [
-                        serializers.SellerCustomerSerializer(seller_customer).data,
-                        serializers.PurchaseSerializer(purchase).data,
-                        items
-                        ]
-                    })
+                return Response({"message":"purchase added"})
         
         return Response(serializer.errors)
+
+
+class Order(APIView):
+    
+    def get(self, request):
+        query_set = models.Purchase.objects.filter(seller_customer__seller=request.user.id)
+        serializer = serializers.OrderSerializer(query_set, many=True)
+        return Response(serializer.data)
+
+    def delete(self, request, pk):
+        models.Purchase.objects.get(id=pk).delete()
+        return Response({"message":"user deleted"})
+
+
+class Payment(APIView):
+
+    def get(self, request):
+        query_set = models.Payment.objects.filter(seller_customer__seller=request.user.id)
+        serializer = serializers.PaymentSerializer(query_set, many=True)
+        return Response(serializer.data)
+
+    @csrf_exempt
+    def post(self, request):
+        request.data["seller"] = request.user.id
+        request.data["customer"] = get_user_model().objects.get(email=request.data["customer"]).id
+        
+        serializer = serializers.SellerCustomerSerializer(data=request.data)
+        if serializer.is_valid():
+            request.data["seller_customer"] = serializer.save().id
+
+            serializer = serializers.PaymentSerializer(data=request.data)
+            if serializer.is_valid():
+                payment = serializer.save()
+                serializer = serializers.PaymentSerializer(payment)
+                return Response(serializer.data)
+
+        return Response(serializer.errors)
+
+
+    def delete(self, request, pk):
+        models.Payment.objects.get(id=pk).delete()
+        return Response({"message":"user deleted"})
 
 
 class User(APIView):
@@ -104,7 +135,7 @@ class User(APIView):
         return Response(serializer.data)
 
     def delete(self, request, pk):
-        models.SellerCustomer.objects.get(id=pk).delete()
+        models.Item.objects.get(id=pk).delete()
         return Response({"message":"user deleted"})
 
 
