@@ -1,0 +1,2 @@
+remove header request from signup page or remove authentication from views
+removed authentication from views
