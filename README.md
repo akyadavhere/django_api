@@ -1,1 +1,1 @@
-# django_api
+# Django Postgres API
