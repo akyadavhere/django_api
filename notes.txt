@@ -1,2 +1,19 @@
-remove header request from signup page or remove authentication from views
+remove header request from signup page or remove authentication from views - fixed 
 removed authentication from views
+
+data = {
+   amount = total amount,
+   paid = total paid,
+   pendings = [
+      {
+         name: customer name,
+         amount: pending amount
+      }
+   ],
+   data = [
+      {
+         date: date,
+         amount: that days total purchase
+      }
+   ]
+}

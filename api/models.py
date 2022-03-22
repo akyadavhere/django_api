@@ -1,6 +1,8 @@
 from django.db   import models
 from django.contrib.auth import get_user_model
 
+from pytz import timezone
+
 
 class SellerCustomer(models.Model):
    seller  = models.ForeignKey(get_user_model(), related_name="user_as_seller", on_delete=models.CASCADE)
@@ -9,7 +11,7 @@ class SellerCustomer(models.Model):
 
 
 class Product(models.Model):
-   seller = models.ForeignKey(get_user_model(), null=True, on_delete=models.SET_NULL)
+   seller = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
    name = models.CharField(max_length=255, unique=True)
    price = models.IntegerField()
    unique_together = [['seller', 'name']]
@@ -17,7 +19,7 @@ class Product(models.Model):
 
 class Purchase(models.Model):
    seller_customer = models.ForeignKey(SellerCustomer, on_delete=models.CASCADE)
-   datetime = models.DateTimeField(auto_now_add=True)
+   datetime = models.DateTimeField(auto_now_add=True) # default="2006-10-25 14:30:59"
    amount = models.DecimalField(max_digits=8, decimal_places=2)
    status = models.BooleanField(default=True)
 
