@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib  import Path
 from datetime import timedelta
+import dj_database_url
+import os
+
+Production = False
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,13 +24,23 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-0r3a7y2+y^iuj0+$g(udfn#)vgzsde6h-148tu2&9m=%%vb+jc'
+if Production:
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = os.environ.get('SECRET_KEY')
+     
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = False
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    ALLOWED_HOSTS = ['0.0.0.0','localhost','127.0.0.1','djangopsql.herokuapp.com','shoprecords.herokuapp.com']
 
-ALLOWED_HOSTS = ['localhost']
+else:
+    #SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = 'django-insecure-0r3a7y2+y^iuj0+$g(udfn#)vgzsde6h-148tu2&9m=%%vb+jc'
+
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
+
+    ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
 # Application definition
@@ -85,7 +99,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+if Production:
+    db_from_env = dj_database_url.config(conn_max_age=600)
+    DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
