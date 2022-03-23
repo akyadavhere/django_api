@@ -15,7 +15,7 @@ from datetime import timedelta
 import dj_database_url
 import os
 
-Production = False
+Production = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -146,6 +146,7 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Added
+AUTH_USER_MODEL = 'user.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -158,7 +159,6 @@ REST_FRAMEWORK = {
 }
 
 
-AUTH_USER_MODEL = 'user.CustomUser'
                
 CORS_ORIGIN_ALLOW_ALL = False
 
