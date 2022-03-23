@@ -85,10 +85,10 @@ class CustomerSerializer(serializers.ModelSerializer):
       read_only_field = ["id","total","paid"]
 
    def get_total(self, object):
-      total = models.Purchase.objects.filter(seller_customer__seller=self.context["user"], seller_customer__customer=object.id).aggregate(Sum("amount"))["amount__sum"]
+      total = models.Purchase.objects.filter(seller_customer__seller=self.context["user"].id, seller_customer__customer=object.id).aggregate(Sum("amount"))["amount__sum"]
       return total
 
    def get_paid(self, object):
-      paid = models.Payment.objects.filter(seller_customer__seller=self.context["user"], seller_customer__customer=object.id).aggregate(Sum("amount"))["amount__sum"]
+      paid = models.Payment.objects.filter(seller_customer__seller=self.context["user"].id, seller_customer__customer=object.id).aggregate(Sum("amount"))["amount__sum"]
       return paid
 
