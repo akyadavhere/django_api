@@ -15,7 +15,7 @@ from datetime import timedelta
 import dj_database_url
 import os
 
-Production = True
+Production = False
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -43,16 +43,6 @@ else:
     ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES':[
-                'rest_framework.permissions.IsAuthenticated',
-    ],
-}
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -63,6 +53,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
     'corsheaders',
     'user',
     'api',
@@ -155,6 +146,16 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Added
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
 
 AUTH_USER_MODEL = 'user.CustomUser'
                
