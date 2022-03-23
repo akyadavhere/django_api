@@ -15,6 +15,7 @@ from datetime import timedelta
 import dj_database_url
 import os
 
+# Variable for changing settings based on development and production environment
 Production = os.environ.get('PRODUCTION')
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -24,6 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
+
 if Production:
     # SECURITY WARNING: keep the secret key used in production secret!
     SECRET_KEY = os.environ.get('SECRET_KEY')
@@ -31,7 +33,14 @@ if Production:
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = False
 
-    ALLOWED_HOSTS = ['0.0.0.0','localhost','127.0.0.1','djangopsql.herokuapp.com','shoprecords.herokuapp.com']
+    ALLOWED_HOSTS = [
+        '0.0.0.0',
+        'localhost',
+        '127.0.0.1',
+        'djangopsql.herokuapp.com',
+        'shoprecords.herokuapp.com',
+        'shoprecords-v2.vercel.app',
+        ]
 
 else:
     #SECURITY WARNING: keep the secret key used in production secret!
@@ -99,6 +108,7 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 if Production:
     db_from_env = dj_database_url.config(conn_max_age=600)
     DATABASES['default'].update(db_from_env)
@@ -145,27 +155,29 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Added
+
 AUTH_USER_MODEL = 'user.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'django_api.custom_auth2.DrfAuthBackend',
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-        # 'django_api.custom_auth2.SafeJWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES':[
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-
-
                
 CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:3000',
+
        'http://shoprecords.herokuapp.com',
        'https://shoprecords.herokuapp.com',
+
+       'http://shoprecords-v2.vercel.app',
+       'https://shoprecords-v2.vercel.app',
+
 )
 
 SIMPLE_JWT = {
@@ -179,3 +191,4 @@ if Production:
         'rest_framework.renderers.JSONRenderer',
     )
 }
+
