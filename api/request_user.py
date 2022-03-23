@@ -1,3 +1,6 @@
+from django.conf import settings
+
+
 from rest_framework_simplejwt.authentication import JWTAuthentication
 
 # authenitcate() verifies and decode the token
