@@ -132,7 +132,7 @@ class Customer(APIView):
         # print(request["user_id"])
         query_set = get_user_model().objects.filter(user_as_customer__seller=request.user.id)
         serializer = serializers.CustomerSerializer(query_set, context={"user":request.user}, many=True)
-        return Response([serializer.data,request.user])
+        return Response([serializer.data,request.user.id])
 
     def delete(self, request, pk):
         models.SellerCustomer.objects.get(seller=request.user.id, customer=pk).delete()
