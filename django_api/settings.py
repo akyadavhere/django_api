@@ -15,7 +15,8 @@ from datetime import timedelta
 import dj_database_url
 import os
 
-Production = True
+Production = False
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -145,11 +146,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Added
 AUTH_USER_MODEL = 'user.CustomUser'
-from rest_framework_simplejwt.authentication import JWTTokenUserAuthentication
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'custom_auth',
-        'rest_framework_simplejwt.authentication.JWTTokenUserAuthentication'
+        # 'django_api.custom_auth2.DrfAuthBackend',
+        # 'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'django_api.custom_auth2.SafeJWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES':[
         'rest_framework.permissions.IsAuthenticated',
