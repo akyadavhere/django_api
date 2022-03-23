@@ -7,7 +7,8 @@ from django.views.decorators.csrf import csrf_exempt
 from rest_framework.views         import APIView
 from django.db.models import Sum, Count
 from . import serializers       
-from . import models 
+from . import models
+from .request_user import get_user
 
 
 class Signup(APIView):
@@ -134,7 +135,7 @@ class Customer(APIView):
         # print(request["user_id"])
         query_set = get_user_model().objects.filter(user_as_customer__seller=request.user.id)
         serializer = serializers.CustomerSerializer(query_set, context={"user":request.user}, many=True)
-        return Response([serializer.data,request.user.id])
+        return Response([serializer.data,get_user(request)])
 
     def delete(self, request, pk):
         models.SellerCustomer.objects.get(seller=request.user.id, customer=pk).delete()
