@@ -125,7 +125,7 @@ class Payment(APIView):
 
 
 class Customer(APIView):
-    
+
     def get(self, request):
         print(request.user)
         query_set = get_user_model().objects.filter(user_as_customer__seller=request.user.id)
