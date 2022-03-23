@@ -128,6 +128,8 @@ class Customer(APIView):
 
     def get(self, request):
         print(request.user)
+        print(request)
+        print(request["user_id"])
         query_set = get_user_model().objects.filter(user_as_customer__seller=request.user.id)
         serializer = serializers.CustomerSerializer(query_set, context={"user":request.user}, many=True)
         return Response({"user":request.user.id})
