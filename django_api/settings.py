@@ -15,7 +15,7 @@ from datetime import timedelta
 import dj_database_url
 import os
 
-Production = False
+Production = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -161,7 +161,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:3000',
-       'http://shoprecords.herokuapp.com',
+    #    'http://shoprecords.herokuapp.com',
        'https://shoprecords.herokuapp.com',
 )
 
