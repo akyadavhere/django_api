@@ -85,7 +85,7 @@ class Purchase(APIView):
 class Order(APIView):
     
     def get(self, request):
-        query_set = models.Purchase.objects.filter(seller_customer__seller=request.user).order_by("-datetime")
+        query_set = models.Purchase.objects.filter(seller_customer__seller=request.user.id).order_by("-datetime")
         serializer = serializers.OrderSerializer(query_set, many=True)
         return Response(serializer.data)
 
@@ -132,7 +132,7 @@ class Customer(APIView):
         return Response(serializer.data)
 
     def delete(self, request, pk):
-        models.SellerCustomer.objects.get(seller=request.user, customer=pk).delete()
+        models.SellerCustomer.objects.get(seller=request.user.id, customer=pk).delete()
         return Response({"message":"user deleted"}) 
 
 
@@ -140,8 +140,8 @@ class Dashboard(APIView):
     
     def get(sef, request):
         total = models.Purchase.objects.filter(seller_customer__seller=request.user.id).aggregate(Sum("amount"))["amount__sum"]
-        paid = models.Payment.objects.filter(seller_customer__seller=request.user).aggregate(Sum("amount"))["amount__sum"]
-        query_set = models.Purchase.objects.filter(seller_customer__seller=request.user).values("datetime__date").annotate(total=Sum("amount")).order_by()
+        paid = models.Payment.objects.filter(seller_customer__seller=request.user.id).aggregate(Sum("amount"))["amount__sum"]
+        query_set = models.Purchase.objects.filter(seller_customer__seller=request.user.id).values("datetime__date").annotate(total=Sum("amount")).order_by()
         return Response({
             "total": total,
             "paid": paid,
