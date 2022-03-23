@@ -127,7 +127,7 @@ class Payment(APIView):
 class Customer(APIView):
     
     def get(self, request):
-        query_set = get_user_model().objects.filter(user_as_customer__seller=request.user)
+        query_set = get_user_model().objects.filter(user_as_customer__seller=request.user.id)
         serializer = serializers.CustomerSerializer(query_set, context={"user":request.user}, many=True)
         return Response(serializer.data)
 
@@ -139,7 +139,7 @@ class Customer(APIView):
 class Dashboard(APIView):
     
     def get(sef, request):
-        total = models.Purchase.objects.filter(seller_customer__seller=request.user).aggregate(Sum("amount"))["amount__sum"]
+        total = models.Purchase.objects.filter(seller_customer__seller=request.user.id).aggregate(Sum("amount"))["amount__sum"]
         paid = models.Payment.objects.filter(seller_customer__seller=request.user).aggregate(Sum("amount"))["amount__sum"]
         query_set = models.Purchase.objects.filter(seller_customer__seller=request.user).values("datetime__date").annotate(total=Sum("amount")).order_by()
         return Response({
