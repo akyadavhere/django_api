@@ -43,6 +43,16 @@ else:
     ALLOWED_HOSTS = ['localhost','127.0.0.1']
 
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+    'DEFAULT_PERMISSION_CLASSES':[
+                'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -147,15 +157,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Added
 
 AUTH_USER_MODEL = 'user.CustomUser'
-
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ],
-    'DEFAULT_PERMISSION_CLASSES':[
-                'rest_framework.permissions.IsAuthenticated',
-    ],
-}
                
 CORS_ORIGIN_ALLOW_ALL = False
 
