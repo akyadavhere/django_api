@@ -150,6 +150,7 @@ class Dashboard(APIView):
 
 
 class User(APIView):
+    authentication_classes = []
     permission_classes = []
 
     def get(self, request, pk=None):
@@ -159,10 +160,10 @@ class User(APIView):
 
             # serializer = serializers.SellerCustomerSerializer(models.SellerCustomer.objects.get(id=pk))
         else:
-            query_set = get_user_model().objects.all()
-            serializer = CustomUserSerializer(query_set, many=True)
+            # query_set = get_user_model().objects.all()
+            # serializer = CustomUserSerializer(query_set, many=True)
 
-            # serializer = serializers.ProductSerializer(models.Product.objects.all(),many=True)
+            serializer = serializers.SellerCustomerSerializer(models.SellerCustomer.objects.all(),many=True)
         return Response(serializer.data)
 
     def delete(self, request, pk):
