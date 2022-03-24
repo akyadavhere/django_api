@@ -25,10 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = os.environ.get('SECRET_KEY')
+
+
 if Production:
-    # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = os.environ.get('SECRET_KEY')
-     
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = False
 
@@ -38,13 +39,9 @@ if Production:
         '127.0.0.1',
         'djangopsql.herokuapp.com',
         'shoprecords.herokuapp.com',
-        'shoprecords-v2.vercel.app',
+        'shoprecords.vercel.app',
         ]
-
 else:
-    #SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = 'django-insecure-0r3a7y2+y^iuj0+$g(udfn#)vgzsde6h-148tu2&9m=%%vb+jc'
-
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
@@ -174,9 +171,8 @@ CORS_ORIGIN_WHITELIST = (
        'http://shoprecords.herokuapp.com',
        'https://shoprecords.herokuapp.com',
 
-       'http://shoprecords-v2.vercel.app',
-       'https://shoprecords-v2.vercel.app',
-
+       'http://shoprecords.vercel.app',
+       'https://shoprecords.vercel.app',
 )
 
 SIMPLE_JWT = {
