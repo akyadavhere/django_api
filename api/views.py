@@ -8,6 +8,7 @@ from django.urls import resolve
 from .request_user import get_user
 from . import serializers       
 from . import models
+from rest_framework.exceptions import AuthenticationFailed
 
 
 class Signup(APIView):
@@ -147,6 +148,8 @@ class Customer(APIView):
 class Dashboard(APIView):
     
     def get(sef, request):
+        # if not get_user(request):
+            # raise AuthenticationFailed("msg")
         current_url = resolve(request.path_info).url_name
         filters = {f"seller_customer__{current_url}": get_user(request).id}
         total = models.Purchase.objects.filter(**filters, status=True).aggregate(Sum("amount"))["amount__sum"]
