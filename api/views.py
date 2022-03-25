@@ -148,8 +148,8 @@ class Customer(APIView):
 class Dashboard(APIView):
     
     def get(sef, request):
-        # if not get_user(request):
-            # raise AuthenticationFailed("msg")
+        if not get_user(request):
+            raise AuthenticationFailed("msg")
         current_url = resolve(request.path_info).url_name
         filters = {f"seller_customer__{current_url}": get_user(request).id}
         total = models.Purchase.objects.filter(**filters, status=True).aggregate(Sum("amount"))["amount__sum"]
