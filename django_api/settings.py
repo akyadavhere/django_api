@@ -156,7 +156,6 @@ AUTH_USER_MODEL = 'user.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
-        # 'api.customauth.CustomAuth'
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES':[
@@ -177,7 +176,7 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(milliseconds=5000),
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
 }
 

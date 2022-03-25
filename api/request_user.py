@@ -1,6 +1,5 @@
-
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.exceptions import AuthenticationFailed
+
 # authenitcate() verifies and decode the token
 
 def get_user(request):
@@ -9,5 +8,4 @@ def get_user(request):
    if response is not None:
       user, token = response
       return user
-   # return AuthenticationFailed()
    return None
