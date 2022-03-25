@@ -9,5 +9,5 @@ def get_user(request):
    if response is not None:
       user, token = response
       return user
-   return AuthenticationFailed()
-   # return None
+   # return AuthenticationFailed()
+   return None
