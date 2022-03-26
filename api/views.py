@@ -1,13 +1,16 @@
-from user.serializers             import CustomUserSerializer
-from rest_framework.response      import Response
-from django.contrib.auth          import get_user_model
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.views         import APIView
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from django.db.models import Sum
 from django.urls import resolve
-from .request_user import get_user
-from . import serializers       
+
+from user.serializers import CustomUserSerializer
+from django.contrib.auth import get_user_model
+from . import serializers    
 from . import models
+
+from .request_user import get_user
 
 
 class Signup(APIView):
@@ -24,7 +27,6 @@ class Signup(APIView):
 
 
 class Product(APIView):
-
     def get(self, request, pk=None):
         if pk:
             query_set = models.Product.objects.get(seller=get_user(request).id, id=pk)
@@ -32,7 +34,6 @@ class Product(APIView):
         else:
             query_set = models.Product.objects.filter(seller=get_user(request).id)
             serializer = serializers.ProductSerializer(query_set, many=True)
-
         return Response(serializer.data)
 
     @csrf_exempt
@@ -55,7 +56,6 @@ class Product(APIView):
 
 
 class Purchase(APIView):
-
     @csrf_exempt
     def post(self, request):
         request.data["seller"] = get_user(request).id
@@ -76,26 +76,11 @@ class Purchase(APIView):
                         serializer.save()
                     else:
                         return Response(serializer.errors)
-
                 return Response({"message":"purchase added"})
-        
         return Response(serializer.errors)
 
 
-# class Order(APIView):
-    
-#     def get(self, request):
-#         query_set = models.Purchase.objects.filter(seller_customer__seller=get_user(request).id).order_by("-datetime")
-#         serializer = serializers.OrderSerializer(query_set, many=True)
-#         return Response(serializer.data)
-
-#     def delete(self, request, pk):
-#         models.Purchase.objects.get(id=pk).delete()
-#         return Response({"message":"order deleted"})
-
-
 class Payment(APIView):
-
     def get(self, request):
         current_url = resolve(request.path_info).url_name
         filters = {f"seller_customer__{current_url}": get_user(request).id}
@@ -117,9 +102,7 @@ class Payment(APIView):
                 payment = serializer.save()
                 serializer = serializers.PaymentSerializer(payment)
                 return Response(serializer.data)
-
         return Response(serializer.errors)
-
 
     def delete(self, request, pk):
         models.Payment.objects.get(id=pk).delete()
@@ -127,14 +110,12 @@ class Payment(APIView):
 
 
 class Customer(APIView):
-
     def get(self, request):
         current_url = resolve(request.path_info).url_name
         if current_url == "seller":
             filters = {"user_as_customer__seller": get_user(request).id}
         else:
             filters = {"user_as_seller__customer": get_user(request).id}
-
         query_set = get_user_model().objects.filter(**filters)
         serializer = serializers.CustomerSerializer(query_set, context={"user":get_user(request), "current_url":current_url}, many=True)
         return Response(serializer.data)
@@ -145,22 +126,17 @@ class Customer(APIView):
 
 
 class Dashboard(APIView):
-    
     def get(sef, request):
+        print(request.user)
         current_url = resolve(request.path_info).url_name
         filters = {f"seller_customer__{current_url}": get_user(request).id}
         total = models.Purchase.objects.filter(**filters, status=True).aggregate(Sum("amount"))["amount__sum"]
         paid = models.Payment.objects.filter(**filters).aggregate(Sum("amount"))["amount__sum"]
         query_set = models.Purchase.objects.filter(**filters, status=True).values("datetime__date").annotate(total=Sum("amount")).order_by()
-        return Response({
-            "total": total,
-            "paid": paid,
-            "graph": query_set
-            })
+        return Response({"total": total,"paid": paid,"graph": query_set})
 
 
 class Order(APIView):
-    
     def get(self, request):
         current_url = resolve(request.path_info).url_name
         filters = {f"seller_customer__{current_url}": get_user(request).id}
@@ -179,23 +155,19 @@ class Order(APIView):
         return Response({"message":"order deleted"})
 
 
-class User(APIView):
+class Test(APIView):
     authentication_classes = []
     permission_classes = []
 
     def get(self, request, pk=None):
         if pk:
-            query_set = models.Product.objects.get(id=pk)
-            serializer = serializers.ProductSerializer(query_set)
-
-            # serializer = serializers.SellerCustomerSerializer(models.SellerCustomer.objects.get(id=pk))
+            query_set = get_user_model().objects.get(id=pk)
+            serializer = serializers.CustomUserSerializer(query_set)
         else:
-            # query_set = get_user_model().objects.all()
-            # serializer = CustomUserSerializer(query_set, many=True)
-
-            serializer = serializers.SellerCustomerSerializer(models.SellerCustomer.objects.all(),many=True)
+            query_set = get_user_model().objects.all()
+            serializer = CustomUserSerializer(query_set, many=True)
         return Response(serializer.data)
 
     def delete(self, request, pk):
         models.Product.objects.get(id=pk).delete()
-        return Response({"message":"user deleted"})
+        return Response({"message":"object deleted"})

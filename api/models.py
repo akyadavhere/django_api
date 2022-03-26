@@ -1,7 +1,5 @@
-from django.db   import models
 from django.contrib.auth import get_user_model
-
-from pytz import timezone
+from django.db import models
 
 
 class SellerCustomer(models.Model):
@@ -34,4 +32,3 @@ class Payment(models.Model):
    seller_customer = models.ForeignKey(SellerCustomer, on_delete=models.CASCADE)
    datetime = models.DateTimeField(auto_now_add=True)
    amount = models.IntegerField()
-

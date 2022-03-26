@@ -33,6 +33,7 @@ class ItemSerializer(serializers.ModelSerializer):
    name = serializers.SerializerMethodField("get_name")
    price = serializers.SerializerMethodField("get_price")
    total = serializers.SerializerMethodField("get_total")
+
    class Meta:
       model = models.Item
       fields = ["id","purchase","product","name","price","quantity","total"]
@@ -50,6 +51,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 class PaymentSerializer(serializers.ModelSerializer):
    opposite_role = serializers.SerializerMethodField("get_opposite_role")
+
    class Meta:
       model = models.Payment
       fields = ["id","seller_customer","opposite_role","datetime","amount"]
@@ -69,6 +71,7 @@ class PaymentSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
    opposite_role = serializers.SerializerMethodField("get_opposite_role")
    items = serializers.SerializerMethodField("get_items")
+
    class Meta:
       model = models.Purchase
       fields = ["id","seller_customer","opposite_role","datetime","amount","status","items"]
@@ -90,6 +93,7 @@ class OrderSerializer(serializers.ModelSerializer):
 class CustomerSerializer(serializers.ModelSerializer):
    total = serializers.SerializerMethodField("get_total")
    paid = serializers.SerializerMethodField("get_paid")
+
    class Meta:
       model = get_user_model()
       fields = ["id","name","email","total","paid"]
@@ -106,8 +110,7 @@ class CustomerSerializer(serializers.ModelSerializer):
             "seller_customer__customer": self.context["user"].id,
             "seller_customer__seller": obj.id,
          }
-      total = models.Purchase.objects.filter(**filters, status=True).aggregate(Sum("amount"))["amount__sum"]
-      return total
+      return models.Purchase.objects.filter(**filters, status=True).aggregate(Sum("amount"))["amount__sum"]
 
    def get_paid(self, obj):
       if self.context["current_url"] == "seller":
@@ -120,6 +123,4 @@ class CustomerSerializer(serializers.ModelSerializer):
             "seller_customer__customer": self.context["user"].id,
             "seller_customer__seller": obj.id,
          }
-      paid = models.Payment.objects.filter(**filters).aggregate(Sum("amount"))["amount__sum"]
-      return paid
-
+      return models.Payment.objects.filter(**filters).aggregate(Sum("amount"))["amount__sum"]
