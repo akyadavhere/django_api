@@ -167,21 +167,3 @@ class Order(APIView):
     def delete(self, request, pk):
         models.Purchase.objects.get(id=pk).delete()
         return Response({"message":"order deleted"})
-
-
-class Test(APIView):
-    authentication_classes = []
-    permission_classes = []
-
-    def get(self, request, pk=None):
-        if pk:
-            query_set = get_user_model().objects.get(id=pk)
-            serializer = serializers.CustomUserSerializer(query_set)
-        else:
-            query_set = get_user_model().objects.all()
-            serializer = CustomUserSerializer(query_set, many=True)
-        return Response(serializer.data)
-
-    def delete(self, request, pk):
-        models.Product.objects.get(id=pk).delete()
-        return Response({"message":"object deleted"})

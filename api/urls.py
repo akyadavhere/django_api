@@ -29,7 +29,4 @@ urlpatterns = [
         path('seller', views.Customer.as_view(), name="customer"),
         path('order/<int:pk>', views.Order.as_view()),
     ])),
-
-    path('test/', views.Test.as_view()),
-    path('test/<int:pk>', views.Test.as_view()),
 ]
