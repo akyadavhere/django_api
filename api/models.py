@@ -24,7 +24,7 @@ class Purchase(models.Model):
 
 class Item(models.Model):
    purchase = models.ForeignKey(Purchase, on_delete=models.CASCADE)
-   product = models.ForeignKey(Product, on_delete=models.PROTECT)
+   product = models.ForeignKey(Product, on_delete=models.CASCADE)
    quantity = models.DecimalField(max_digits=5, decimal_places=2)
 
 

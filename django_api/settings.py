@@ -151,8 +151,8 @@ CORS_ORIGIN_ALLOW_ALL = True
 # CORS_ORIGIN_WHITELIST = ()
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=10),
-    'REFRESH_TOKEN_LIFETIME': timedelta(hours=12),
+    'ACCESS_TOKEN_LIFETIME': timedelta(seconds=3),
+    'REFRESH_TOKEN_LIFETIME': timedelta(seconds=5),
 }   
 
 if Production:

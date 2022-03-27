@@ -1,5 +1,6 @@
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from django.db.models import Sum
@@ -61,6 +62,9 @@ class Purchase(APIView):
         request.data["seller"] = get_user(request).id
         request.data["customer"] = get_user_model().objects.get(email=request.data["customer"]).id
 
+        if request.data["seller"] == request.data["customer"]:
+            return Response(status=HTTP_400_BAD_REQUEST)
+
         serializer = serializers.SellerCustomerSerializer(data=request.data)
         if serializer.is_valid():
             request.data["seller_customer"] = serializer.save().id
@@ -92,6 +96,9 @@ class Payment(APIView):
     def post(self, request):
         request.data["seller"] = get_user(request).id
         request.data["customer"] = get_user_model().objects.get(email=request.data["customer"]).id
+        
+        if request.data["seller"] == request.data["customer"]:
+            return Response(status=HTTP_400_BAD_REQUEST)
         
         serializer = serializers.SellerCustomerSerializer(data=request.data)
         if serializer.is_valid():
