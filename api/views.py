@@ -13,6 +13,9 @@ from . import models
 
 from .request_user import get_user
 
+from django.conf import settings
+from django.core.mail import send_mail
+
 
 class Signup(APIView):
     authentication_classes = []
@@ -60,7 +63,11 @@ class Purchase(APIView):
     @csrf_exempt
     def post(self, request):
         request.data["seller"] = get_user(request).id
+        customer_email = request.data["customer"]
         request.data["customer"] = get_user_model().objects.get(email=request.data["customer"]).id
+        
+        sub = "New order added - Shoprecords"
+        msg = f"A new order added to your shoprecords's account by seller ({get_user(request).email}) "
 
         if request.data["seller"] == request.data["customer"]:
             return Response(status=HTTP_400_BAD_REQUEST)
@@ -80,6 +87,7 @@ class Purchase(APIView):
                         serializer.save()
                     else:
                         return Response(serializer.errors)
+                print(send_mail(sub, msg, settings.EMAIL_HOST_USER, [customer_email]))
                 return Response({"message":"purchase added"})
         return Response(serializer.errors)
 
@@ -96,7 +104,7 @@ class Payment(APIView):
     def post(self, request):
         request.data["seller"] = get_user(request).id
         request.data["customer"] = get_user_model().objects.get(email=request.data["customer"]).id
-        
+
         if request.data["seller"] == request.data["customer"]:
             return Response(status=HTTP_400_BAD_REQUEST)
         
@@ -134,7 +142,6 @@ class Customer(APIView):
 
 class Dashboard(APIView):
     def get(sef, request):
-        print(request.user)
         current_url = resolve(request.path_info).url_name
         filters = {f"seller_customer__{current_url}": get_user(request).id}
         total = models.Purchase.objects.filter(**filters, status=True).aggregate(Sum("amount"))["amount__sum"]
