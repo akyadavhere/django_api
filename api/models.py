@@ -32,5 +32,5 @@ class Item(models.Model):
 
 class Payment(models.Model):
    seller_customer = models.ForeignKey(SellerCustomer, on_delete=models.CASCADE)
-   datetime = models.DateTimeField(auto_now_add=True)
+   datetime = models.DateTimeField()
    amount = models.IntegerField()
