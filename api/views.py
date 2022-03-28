@@ -146,7 +146,7 @@ class Dashboard(APIView):
         filters = {f"seller_customer__{current_url}": get_user(request).id}
         total = models.Purchase.objects.filter(**filters, status=True).aggregate(Sum("amount"))["amount__sum"]
         paid = models.Payment.objects.filter(**filters).aggregate(Sum("amount"))["amount__sum"]
-        query_set = models.Purchase.objects.filter(**filters, status=True).values("datetime__date").annotate(total=Sum("amount")).order_by()
+        query_set = models.Purchase.objects.filter(**filters, status=True).values("datetime__date").annotate(total=Sum("amount")).order_by("datetime__date")
         return Response({"total": total,"paid": paid,"graph": query_set})
 
 
