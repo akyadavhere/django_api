@@ -12,7 +12,9 @@ class Product(models.Model):
    seller = models.ForeignKey(get_user_model(), null=True, on_delete=models.CASCADE)
    name = models.CharField(max_length=255)
    price = models.IntegerField()
-   unique_together = [['seller', 'name']]
+
+   class Meta:
+      unique_together = ["seller", "name"]
 
 
 class Purchase(models.Model):
