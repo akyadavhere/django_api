@@ -19,7 +19,7 @@ class Product(models.Model):
 
 class Purchase(models.Model):
    seller_customer = models.ForeignKey(SellerCustomer, on_delete=models.CASCADE)
-   datetime = models.DateTimeField() # default="2006-10-25 14:30:59"
+   datetime = models.DateTimeField(auto_now_add=True)
    amount = models.DecimalField(max_digits=8, decimal_places=2)
    status = models.BooleanField(default=True)
 
@@ -32,5 +32,5 @@ class Item(models.Model):
 
 class Payment(models.Model):
    seller_customer = models.ForeignKey(SellerCustomer, on_delete=models.CASCADE)
-   datetime = models.DateTimeField()
+   datetime = models.DateTimeField(auto_now_add=True)
    amount = models.IntegerField()

@@ -87,7 +87,7 @@ class Purchase(APIView):
                         serializer.save()
                     else:
                         return Response(serializer.errors)
-                print(send_mail(sub, msg, settings.EMAIL_HOST_USER, [customer_email], fail_silently=True))
+                send_mail(sub, msg, settings.EMAIL_HOST_USER, [customer_email], fail_silently=True)
                 return Response({"message":"purchase added"})
         return Response(serializer.errors)
 
